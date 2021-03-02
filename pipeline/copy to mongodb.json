@@ -30,11 +30,6 @@
 						"type": "TabularTranslator",
 						"mappings": [
 							{
-								"sink": {
-									"path": "$['_id']['$oid']"
-								}
-							},
-							{
 								"source": {
 									"name": "messageId",
 									"type": "Int32"
@@ -44,6 +39,10 @@
 								}
 							},
 							{
+								"source": {
+									"name": "devideId",
+									"type": "String"
+								},
 								"sink": {
 									"path": "$['deviceId']"
 								}
@@ -67,6 +66,10 @@
 								}
 							},
 							{
+								"source": {
+									"name": "EventProcessedTime",
+									"type": "String"
+								},
 								"sink": {
 									"path": "$['EventProcessedUtcTime']"
 								}
@@ -87,31 +90,6 @@
 								},
 								"sink": {
 									"path": "$['EventEnqueuedUtcTime']"
-								}
-							},
-							{
-								"sink": {
-									"path": "$['IoTHub']['MessageId']"
-								}
-							},
-							{
-								"sink": {
-									"path": "$['IoTHub']['CorrelationId']"
-								}
-							},
-							{
-								"sink": {
-									"path": "$['IoTHub']['ConnectionDeviceId']"
-								}
-							},
-							{
-								"sink": {
-									"path": "$['IoTHub']['ConnectionDeviceGenerationId']"
-								}
-							},
-							{
-								"sink": {
-									"path": "$['IoTHub']['EnqueuedTime']"
 								}
 							}
 						]
