@@ -1,0 +1,136 @@
+{
+	"name": "copy to mongodb",
+	"properties": {
+		"activities": [
+			{
+				"name": "copying data",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"sink": {
+						"type": "CosmosDbMongoDbApiSink",
+						"writeBatchTimeout": "00:30:00",
+						"writeBehavior": "insert"
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"sink": {
+									"path": "$['_id']['$oid']"
+								}
+							},
+							{
+								"source": {
+									"name": "messageId",
+									"type": "Int32"
+								},
+								"sink": {
+									"path": "$['messageId']"
+								}
+							},
+							{
+								"sink": {
+									"path": "$['deviceId']"
+								}
+							},
+							{
+								"source": {
+									"name": "temperature",
+									"type": "Double"
+								},
+								"sink": {
+									"path": "$['temperature']"
+								}
+							},
+							{
+								"source": {
+									"name": "humidity",
+									"type": "Int32"
+								},
+								"sink": {
+									"path": "$['humidity']"
+								}
+							},
+							{
+								"sink": {
+									"path": "$['EventProcessedUtcTime']"
+								}
+							},
+							{
+								"source": {
+									"name": "PartitionId",
+									"type": "Int32"
+								},
+								"sink": {
+									"path": "$['PartitionId']"
+								}
+							},
+							{
+								"source": {
+									"name": "EventEnqueuedUtcTime",
+									"type": "String"
+								},
+								"sink": {
+									"path": "$['EventEnqueuedUtcTime']"
+								}
+							},
+							{
+								"sink": {
+									"path": "$['IoTHub']['MessageId']"
+								}
+							},
+							{
+								"sink": {
+									"path": "$['IoTHub']['CorrelationId']"
+								}
+							},
+							{
+								"sink": {
+									"path": "$['IoTHub']['ConnectionDeviceId']"
+								}
+							},
+							{
+								"sink": {
+									"path": "$['IoTHub']['ConnectionDeviceGenerationId']"
+								}
+							},
+							{
+								"sink": {
+									"path": "$['IoTHub']['EnqueuedTime']"
+								}
+							}
+						]
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "AzureSqlTable2",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "CosmosDbMongoDbApiCollection1",
+						"type": "DatasetReference"
+					}
+				]
+			}
+		],
+		"annotations": []
+	}
+}

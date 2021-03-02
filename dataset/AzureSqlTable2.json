@@ -1,0 +1,49 @@
+{
+	"name": "AzureSqlTable2",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureSqlDatabase2",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "messageId",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "devideId",
+				"type": "varchar"
+			},
+			{
+				"name": "temperature",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "humidity",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "EventProcessedTime",
+				"type": "varchar"
+			},
+			{
+				"name": "PartitionId",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "EventEnqueuedUtcTime",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "iotLow"
+		}
+	}
+}
