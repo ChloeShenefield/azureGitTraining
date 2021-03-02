@@ -1,0 +1,13 @@
+{
+	"name": "linkedService2",
+	"properties": {
+		"annotations": [],
+		"type": "AzureDataLakeStore",
+		"typeProperties": {
+			"dataLakeStoreUri": "https://chloeadftrain.azuredatalakestore.net/webhdfs/v1",
+			"tenant": "02aa9fc1-18bc-4798-a020-e01c854dd434",
+			"subscriptionId": "a1a95c67-01fb-433d-90dc-f56faeae921c",
+			"resourceGroupName": "DefaultResourceGroup-CUS"
+		}
+	}
+}
