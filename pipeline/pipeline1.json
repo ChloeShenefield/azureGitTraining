@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Data flow1",
+				"name": "splitting the data",
 				"type": "ExecuteDataFlow",
 				"dependsOn": [],
 				"policy": {
