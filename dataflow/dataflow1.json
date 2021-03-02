@@ -5,20 +5,31 @@
 		"typeProperties": {
 			"sources": [
 				{
-					"linkedService": {
-						"referenceName": "linkedService2",
-						"type": "LinkedServiceReference"
+					"dataset": {
+						"referenceName": "Json1",
+						"type": "DatasetReference"
 					},
 					"name": "source1"
 				}
 			],
-			"sinks": [],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "AzureSqlTable1",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				},
+				{
+					"name": "sink2"
+				}
+			],
 			"transformations": [
 				{
 					"name": "TempSplit"
 				}
 			],
-			"script": "source(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tlimit: 100,\n\tformat: 'delimited',\n\tfolderPath: 'iotoutput',\n\tfileName: '0_164d7354a23941369f26b630c7f03833.json',\n\tcolumnDelimiter: ',',\n\tescapeChar: '\\\\',\n\tqutoChar: '\\\"',\n\tcolumnNamesAsHeader: false) ~> source1\nsource1 split(ERROR_FUNCTION(''),\n\tdisjoint: true) ~> TempSplit@(, )"
+			"script": "source(output(\n\t\tmessageId as string,\n\t\tdeviceId as string,\n\t\ttemperature as double,\n\t\thumidity as double,\n\t\tEventProcessedUtcTime as string,\n\t\tPartitionId as string,\n\t\tEventEnqueuedUtcTime as string,\n\t\tIoTHub as (MessageId as string, CorrelationId as string, ConnectionDeviceId as string, ConnectionDeviceGenerationId as string, EnqueuedTime as string)\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tlimit: 100,\n\tdocumentForm: 'documentPerLine') ~> source1\nsource1 split(temperature > 25,\n\tdisjoint: true) ~> TempSplit@(tempHigh, tempLow)\nTempSplit@tempHigh sink(input(\n\t\tmessageId as integer,\n\t\tdevideId as string,\n\t\ttemperature as integer,\n\t\thumidity as integer,\n\t\tEventProcessedTime as string,\n\t\tPartitionId as integer,\n\t\tEventEnqueuedUtcTime as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tmapColumn(\n\t\tmessageId,\n\t\tdevideId = deviceId,\n\t\ttemperature,\n\t\thumidity,\n\t\tEventProcessedTime = EventProcessedUtcTime,\n\t\tPartitionId,\n\t\tEventEnqueuedUtcTime\n\t),\n\terrorHandlingOption: 'stopOnFirstError') ~> sink1\nTempSplit@tempLow sink(skipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sink2"
 		}
 	}
 }
