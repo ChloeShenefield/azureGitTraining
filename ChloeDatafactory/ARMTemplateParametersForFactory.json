@@ -1,0 +1,75 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"value": "ChloeDatafactory"
+		},
+		"AzureBlobStorage1_connectionString": {
+			"value": ""
+		},
+		"AzureDatabricks1_accessToken": {
+			"value": ""
+		},
+		"AzureSqlDatabase1_connectionString": {
+			"value": ""
+		},
+		"AzureSqlDatabase2_connectionString": {
+			"value": ""
+		},
+		"AzureTableStorage1_connectionString": {
+			"value": ""
+		},
+		"CosmosDb1_connectionString": {
+			"value": ""
+		},
+		"CosmosDbMongoDbApi1_connectionString": {
+			"value": ""
+		},
+		"CosmosDbMongoDbApi2_connectionString": {
+			"value": ""
+		},
+		"RestService1_password": {
+			"value": ""
+		},
+		"AzureKeyVault1_properties_typeProperties_baseUrl": {
+			"value": "https://chloe.vault.azure.net/"
+		},
+		"CosmosDbMongoDbApi1_properties_typeProperties_database": {
+			"value": "iotLow"
+		},
+		"CosmosDbMongoDbApi2_properties_typeProperties_database": {
+			"value": "adftraining"
+		},
+		"RestService1_properties_typeProperties_url": {
+			"value": "https://jsonplaceholder.typicode.com/posts"
+		},
+		"RestService1_properties_typeProperties_userName": {
+			"value": "chloe"
+		},
+		"linkedService1_properties_typeProperties_dataLakeStoreUri": {
+			"value": "https://chloeadftrain.azuredatalakestore.net/webhdfs/v1"
+		},
+		"linkedService1_properties_typeProperties_tenant": {
+			"value": "02aa9fc1-18bc-4798-a020-e01c854dd434"
+		},
+		"linkedService1_properties_typeProperties_subscriptionId": {
+			"value": "a1a95c67-01fb-433d-90dc-f56faeae921c"
+		},
+		"linkedService1_properties_typeProperties_resourceGroupName": {
+			"value": "DefaultResourceGroup-CUS"
+		},
+		"linkedService2_properties_typeProperties_dataLakeStoreUri": {
+			"value": "https://chloeadftrain.azuredatalakestore.net/webhdfs/v1"
+		},
+		"linkedService2_properties_typeProperties_tenant": {
+			"value": "02aa9fc1-18bc-4798-a020-e01c854dd434"
+		},
+		"linkedService2_properties_typeProperties_subscriptionId": {
+			"value": "a1a95c67-01fb-433d-90dc-f56faeae921c"
+		},
+		"linkedService2_properties_typeProperties_resourceGroupName": {
+			"value": "DefaultResourceGroup-CUS"
+		}
+	}
+}

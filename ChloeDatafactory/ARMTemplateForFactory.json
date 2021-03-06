@@ -1,0 +1,735 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "ChloeDatafactory"
+		},
+		"AzureBlobStorage1_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'AzureBlobStorage1'"
+		},
+		"AzureDatabricks1_accessToken": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accessToken' of 'AzureDatabricks1'"
+		},
+		"AzureSqlDatabase1_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'AzureSqlDatabase1'"
+		},
+		"AzureSqlDatabase2_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'AzureSqlDatabase2'"
+		},
+		"AzureTableStorage1_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'AzureTableStorage1'"
+		},
+		"CosmosDb1_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'CosmosDb1'"
+		},
+		"CosmosDbMongoDbApi1_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'CosmosDbMongoDbApi1'"
+		},
+		"CosmosDbMongoDbApi2_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'CosmosDbMongoDbApi2'"
+		},
+		"RestService1_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'RestService1'"
+		},
+		"AzureKeyVault1_properties_typeProperties_baseUrl": {
+			"type": "string",
+			"defaultValue": "https://chloe.vault.azure.net/"
+		},
+		"CosmosDbMongoDbApi1_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "iotLow"
+		},
+		"CosmosDbMongoDbApi2_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "adftraining"
+		},
+		"RestService1_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://jsonplaceholder.typicode.com/posts"
+		},
+		"RestService1_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "chloe"
+		},
+		"linkedService1_properties_typeProperties_dataLakeStoreUri": {
+			"type": "string",
+			"defaultValue": "https://chloeadftrain.azuredatalakestore.net/webhdfs/v1"
+		},
+		"linkedService1_properties_typeProperties_tenant": {
+			"type": "string",
+			"defaultValue": "02aa9fc1-18bc-4798-a020-e01c854dd434"
+		},
+		"linkedService1_properties_typeProperties_subscriptionId": {
+			"type": "string",
+			"defaultValue": "a1a95c67-01fb-433d-90dc-f56faeae921c"
+		},
+		"linkedService1_properties_typeProperties_resourceGroupName": {
+			"type": "string",
+			"defaultValue": "DefaultResourceGroup-CUS"
+		},
+		"linkedService2_properties_typeProperties_dataLakeStoreUri": {
+			"type": "string",
+			"defaultValue": "https://chloeadftrain.azuredatalakestore.net/webhdfs/v1"
+		},
+		"linkedService2_properties_typeProperties_tenant": {
+			"type": "string",
+			"defaultValue": "02aa9fc1-18bc-4798-a020-e01c854dd434"
+		},
+		"linkedService2_properties_typeProperties_subscriptionId": {
+			"type": "string",
+			"defaultValue": "a1a95c67-01fb-433d-90dc-f56faeae921c"
+		},
+		"linkedService2_properties_typeProperties_resourceGroupName": {
+			"type": "string",
+			"defaultValue": "DefaultResourceGroup-CUS"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/copy to mongodb')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "copying data",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"queryTimeout": "02:00:00",
+								"partitionOption": "None"
+							},
+							"sink": {
+								"type": "CosmosDbMongoDbApiSink",
+								"writeBatchTimeout": "00:30:00",
+								"writeBehavior": "insert"
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "messageId",
+											"type": "Int32"
+										},
+										"sink": {
+											"path": "$['messageId']"
+										}
+									},
+									{
+										"source": {
+											"name": "devideId",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['deviceId']"
+										}
+									},
+									{
+										"source": {
+											"name": "temperature",
+											"type": "Double"
+										},
+										"sink": {
+											"path": "$['temperature']"
+										}
+									},
+									{
+										"source": {
+											"name": "humidity",
+											"type": "Int32"
+										},
+										"sink": {
+											"path": "$['humidity']"
+										}
+									},
+									{
+										"source": {
+											"name": "EventProcessedTime",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['EventProcessedUtcTime']"
+										}
+									},
+									{
+										"source": {
+											"name": "PartitionId",
+											"type": "Int32"
+										},
+										"sink": {
+											"path": "$['PartitionId']"
+										}
+									},
+									{
+										"source": {
+											"name": "EventEnqueuedUtcTime",
+											"type": "String"
+										},
+										"sink": {
+											"path": "$['EventEnqueuedUtcTime']"
+										}
+									}
+								]
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "AzureSqlTable2",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "CosmosDbMongoDbApiCollection1",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					}
+				],
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/AzureSqlTable2')]",
+				"[concat(variables('factoryId'), '/datasets/CosmosDbMongoDbApiCollection1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/pipeline1')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "splitting the data",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "dataflow1",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"source1": {},
+									"sink1": {},
+									"sink2": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/dataflow1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/pipetoDatabricks')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Notebook1",
+						"type": "DatabricksNotebook",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"notebookPath": "/adftutorial/mynotebook",
+							"baseParameters": {
+								"input": {
+									"value": "@pipeline().parameters.name\n",
+									"type": "Expression"
+								}
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "AzureDatabricks1",
+							"type": "LinkedServiceReference"
+						}
+					}
+				],
+				"parameters": {
+					"name": {
+						"type": "string"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureDatabricks1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureSqlTable1')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabase1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "messageId",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "devideId",
+						"type": "varchar"
+					},
+					{
+						"name": "temperature",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "humidity",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "EventProcessedTime",
+						"type": "varchar"
+					},
+					{
+						"name": "PartitionId",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "EventEnqueuedUtcTime",
+						"type": "varchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "iotHigh"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureSqlDatabase1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureSqlTable2')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabase2",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "messageId",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "devideId",
+						"type": "varchar"
+					},
+					{
+						"name": "temperature",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "humidity",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "EventProcessedTime",
+						"type": "varchar"
+					},
+					{
+						"name": "PartitionId",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "EventEnqueuedUtcTime",
+						"type": "varchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "iotLow"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureSqlDatabase2')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/CosmosDbMongoDbApiCollection1')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "CosmosDbMongoDbApi1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "CosmosDbMongoDbApiCollection",
+				"schema": [],
+				"typeProperties": {
+					"collection": "iotLow"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/CosmosDbMongoDbApi1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Json1')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "0_756384f325d14717ae770b5554eb64c6_1.json",
+						"container": "chloeiotout"
+					}
+				},
+				"schema": {
+					"type": "object",
+					"properties": {
+						"messageId": {
+							"type": "integer"
+						},
+						"deviceId": {
+							"type": "string"
+						},
+						"temperature": {
+							"type": "number"
+						},
+						"humidity": {
+							"type": "number"
+						},
+						"EventProcessedUtcTime": {
+							"type": "string"
+						},
+						"PartitionId": {
+							"type": "integer"
+						},
+						"EventEnqueuedUtcTime": {
+							"type": "string"
+						},
+						"IoTHub": {
+							"type": "object",
+							"properties": {
+								"MessageId": {
+									"type": "null"
+								},
+								"CorrelationId": {
+									"type": "null"
+								},
+								"ConnectionDeviceId": {
+									"type": "string"
+								},
+								"ConnectionDeviceGenerationId": {
+									"type": "string"
+								},
+								"EnqueuedTime": {
+									"type": "string"
+								}
+							}
+						}
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureBlobStorage1')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobStorage",
+				"typeProperties": {
+					"connectionString": "[parameters('AzureBlobStorage1_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureDatabricks1')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureDatabricks",
+				"typeProperties": {
+					"domain": "https://adb-7490176807421997.17.azuredatabricks.net",
+					"accessToken": {
+						"type": "SecureString",
+						"value": "[parameters('AzureDatabricks1_accessToken')]"
+					},
+					"newClusterNodeType": "Standard_NC12",
+					"newClusterNumOfWorker": "1",
+					"newClusterVersion": "5.5.x-gpu-scala2.11"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureKeyVault1')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureKeyVault",
+				"typeProperties": {
+					"baseUrl": "[parameters('AzureKeyVault1_properties_typeProperties_baseUrl')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureSqlDatabase1')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureSqlDatabase",
+				"typeProperties": {
+					"connectionString": "[parameters('AzureSqlDatabase1_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureSqlDatabase2')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureSqlDatabase",
+				"typeProperties": {
+					"connectionString": "[parameters('AzureSqlDatabase2_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureTableStorage1')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureTableStorage",
+				"typeProperties": {
+					"connectionString": "[parameters('AzureTableStorage1_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/CosmosDb1')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "CosmosDb",
+				"typeProperties": {
+					"connectionString": "[parameters('CosmosDb1_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/CosmosDbMongoDbApi1')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "CosmosDbMongoDbApi",
+				"typeProperties": {
+					"connectionString": "[parameters('CosmosDbMongoDbApi1_connectionString')]",
+					"database": "[parameters('CosmosDbMongoDbApi1_properties_typeProperties_database')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/CosmosDbMongoDbApi2')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "CosmosDbMongoDbApi",
+				"typeProperties": {
+					"connectionString": "[parameters('CosmosDbMongoDbApi2_connectionString')]",
+					"database": "[parameters('CosmosDbMongoDbApi2_properties_typeProperties_database')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/RestService1')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "RestService",
+				"typeProperties": {
+					"url": "[parameters('RestService1_properties_typeProperties_url')]",
+					"enableServerCertificateValidation": true,
+					"authenticationType": "Basic",
+					"userName": "[parameters('RestService1_properties_typeProperties_userName')]",
+					"password": {
+						"type": "SecureString",
+						"value": "[parameters('RestService1_password')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/linkedService1')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureDataLakeStore",
+				"typeProperties": {
+					"dataLakeStoreUri": "[parameters('linkedService1_properties_typeProperties_dataLakeStoreUri')]",
+					"tenant": "[parameters('linkedService1_properties_typeProperties_tenant')]",
+					"subscriptionId": "[parameters('linkedService1_properties_typeProperties_subscriptionId')]",
+					"resourceGroupName": "[parameters('linkedService1_properties_typeProperties_resourceGroupName')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/linkedService2')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureDataLakeStore",
+				"typeProperties": {
+					"dataLakeStoreUri": "[parameters('linkedService2_properties_typeProperties_dataLakeStoreUri')]",
+					"tenant": "[parameters('linkedService2_properties_typeProperties_tenant')]",
+					"subscriptionId": "[parameters('linkedService2_properties_typeProperties_subscriptionId')]",
+					"resourceGroupName": "[parameters('linkedService2_properties_typeProperties_resourceGroupName')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/dataflow1')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "Json1",
+								"type": "DatasetReference"
+							},
+							"name": "source1"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "AzureSqlTable1",
+								"type": "DatasetReference"
+							},
+							"name": "sink1"
+						},
+						{
+							"dataset": {
+								"referenceName": "AzureSqlTable2",
+								"type": "DatasetReference"
+							},
+							"name": "sink2"
+						}
+					],
+					"transformations": [
+						{
+							"name": "TempSplit"
+						}
+					],
+					"script": "source(output(\n\t\tmessageId as string,\n\t\tdeviceId as string,\n\t\ttemperature as double,\n\t\thumidity as double,\n\t\tEventProcessedUtcTime as string,\n\t\tPartitionId as string,\n\t\tEventEnqueuedUtcTime as string,\n\t\tIoTHub as (MessageId as string, CorrelationId as string, ConnectionDeviceId as string, ConnectionDeviceGenerationId as string, EnqueuedTime as string)\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tlimit: 100,\n\tdocumentForm: 'documentPerLine') ~> source1\nsource1 split(floor(temperature) > 25,\n\tdisjoint: false) ~> TempSplit@(tempHigh, tempLow)\nTempSplit@tempHigh sink(input(\n\t\tmessageId as integer,\n\t\tdevideId as string,\n\t\ttemperature as integer,\n\t\thumidity as integer,\n\t\tEventProcessedTime as string,\n\t\tPartitionId as integer,\n\t\tEventEnqueuedUtcTime as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tmapColumn(\n\t\tmessageId,\n\t\tdevideId = deviceId,\n\t\ttemperature,\n\t\thumidity,\n\t\tEventProcessedTime = EventProcessedUtcTime,\n\t\tPartitionId,\n\t\tEventEnqueuedUtcTime\n\t),\n\terrorHandlingOption: 'stopOnFirstError') ~> sink1\nTempSplit@tempLow sink(input(\n\t\tmessageId as integer,\n\t\tdevideId as string,\n\t\ttemperature as double,\n\t\thumidity as integer,\n\t\tEventProcessedTime as string,\n\t\tPartitionId as integer,\n\t\tEventEnqueuedUtcTime as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tmapColumn(\n\t\tmessageId,\n\t\tdevideId = deviceId,\n\t\ttemperature,\n\t\thumidity,\n\t\tEventProcessedTime = EventProcessedUtcTime,\n\t\tPartitionId,\n\t\tEventEnqueuedUtcTime\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tsaveOrder: 1,\n\terrorHandlingOption: 'stopOnFirstError') ~> sink2"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/Json1')]",
+				"[concat(variables('factoryId'), '/datasets/AzureSqlTable1')]",
+				"[concat(variables('factoryId'), '/datasets/AzureSqlTable2')]"
+			]
+		}
+	]
+}

@@ -1,0 +1,196 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "ChloeDatafactory"
+		},
+		"AzureBlobStorage1_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'AzureBlobStorage1'"
+		},
+		"AzureDatabricks1_accessToken": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accessToken' of 'AzureDatabricks1'"
+		},
+		"AzureSqlDatabase1_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'AzureSqlDatabase1'"
+		},
+		"AzureSqlDatabase2_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'AzureSqlDatabase2'"
+		},
+		"AzureTableStorage1_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'AzureTableStorage1'"
+		},
+		"CosmosDb1_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'CosmosDb1'"
+		},
+		"CosmosDbMongoDbApi1_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'CosmosDbMongoDbApi1'"
+		},
+		"CosmosDbMongoDbApi2_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'CosmosDbMongoDbApi2'"
+		},
+		"RestService1_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'RestService1'"
+		},
+		"AzureKeyVault1_properties_typeProperties_baseUrl": {
+			"type": "string",
+			"defaultValue": "https://chloe.vault.azure.net/"
+		},
+		"CosmosDbMongoDbApi1_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "iotLow"
+		},
+		"CosmosDbMongoDbApi2_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "adftraining"
+		},
+		"RestService1_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://jsonplaceholder.typicode.com/posts"
+		},
+		"RestService1_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "chloe"
+		},
+		"linkedService1_properties_typeProperties_dataLakeStoreUri": {
+			"type": "string",
+			"defaultValue": "https://chloeadftrain.azuredatalakestore.net/webhdfs/v1"
+		},
+		"linkedService1_properties_typeProperties_tenant": {
+			"type": "string",
+			"defaultValue": "02aa9fc1-18bc-4798-a020-e01c854dd434"
+		},
+		"linkedService1_properties_typeProperties_subscriptionId": {
+			"type": "string",
+			"defaultValue": "a1a95c67-01fb-433d-90dc-f56faeae921c"
+		},
+		"linkedService1_properties_typeProperties_resourceGroupName": {
+			"type": "string",
+			"defaultValue": "DefaultResourceGroup-CUS"
+		},
+		"linkedService2_properties_typeProperties_dataLakeStoreUri": {
+			"type": "string",
+			"defaultValue": "https://chloeadftrain.azuredatalakestore.net/webhdfs/v1"
+		},
+		"linkedService2_properties_typeProperties_tenant": {
+			"type": "string",
+			"defaultValue": "02aa9fc1-18bc-4798-a020-e01c854dd434"
+		},
+		"linkedService2_properties_typeProperties_subscriptionId": {
+			"type": "string",
+			"defaultValue": "a1a95c67-01fb-433d-90dc-f56faeae921c"
+		},
+		"linkedService2_properties_typeProperties_resourceGroupName": {
+			"type": "string",
+			"defaultValue": "DefaultResourceGroup-CUS"
+		},
+		"containerUri": {
+			"type": "string",
+			"metadata": "URI to storage account containing linked ARM templates"
+		},
+		"containerSasToken": {
+			"type": "string",
+			"metadata": "Sas token to storage account containing linked ARM templates"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "ChloeDatafactory_ArmTemplate_0",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2018-02-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_0.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					},
+					"AzureBlobStorage1_connectionString": {
+						"value": "[parameters('AzureBlobStorage1_connectionString')]"
+					},
+					"AzureDatabricks1_accessToken": {
+						"value": "[parameters('AzureDatabricks1_accessToken')]"
+					},
+					"AzureSqlDatabase1_connectionString": {
+						"value": "[parameters('AzureSqlDatabase1_connectionString')]"
+					},
+					"AzureSqlDatabase2_connectionString": {
+						"value": "[parameters('AzureSqlDatabase2_connectionString')]"
+					},
+					"AzureTableStorage1_connectionString": {
+						"value": "[parameters('AzureTableStorage1_connectionString')]"
+					},
+					"CosmosDb1_connectionString": {
+						"value": "[parameters('CosmosDb1_connectionString')]"
+					},
+					"CosmosDbMongoDbApi1_connectionString": {
+						"value": "[parameters('CosmosDbMongoDbApi1_connectionString')]"
+					},
+					"CosmosDbMongoDbApi2_connectionString": {
+						"value": "[parameters('CosmosDbMongoDbApi2_connectionString')]"
+					},
+					"RestService1_password": {
+						"value": "[parameters('RestService1_password')]"
+					},
+					"AzureKeyVault1_properties_typeProperties_baseUrl": {
+						"value": "[parameters('AzureKeyVault1_properties_typeProperties_baseUrl')]"
+					},
+					"CosmosDbMongoDbApi1_properties_typeProperties_database": {
+						"value": "[parameters('CosmosDbMongoDbApi1_properties_typeProperties_database')]"
+					},
+					"CosmosDbMongoDbApi2_properties_typeProperties_database": {
+						"value": "[parameters('CosmosDbMongoDbApi2_properties_typeProperties_database')]"
+					},
+					"RestService1_properties_typeProperties_url": {
+						"value": "[parameters('RestService1_properties_typeProperties_url')]"
+					},
+					"RestService1_properties_typeProperties_userName": {
+						"value": "[parameters('RestService1_properties_typeProperties_userName')]"
+					},
+					"linkedService1_properties_typeProperties_dataLakeStoreUri": {
+						"value": "[parameters('linkedService1_properties_typeProperties_dataLakeStoreUri')]"
+					},
+					"linkedService1_properties_typeProperties_tenant": {
+						"value": "[parameters('linkedService1_properties_typeProperties_tenant')]"
+					},
+					"linkedService1_properties_typeProperties_subscriptionId": {
+						"value": "[parameters('linkedService1_properties_typeProperties_subscriptionId')]"
+					},
+					"linkedService1_properties_typeProperties_resourceGroupName": {
+						"value": "[parameters('linkedService1_properties_typeProperties_resourceGroupName')]"
+					},
+					"linkedService2_properties_typeProperties_dataLakeStoreUri": {
+						"value": "[parameters('linkedService2_properties_typeProperties_dataLakeStoreUri')]"
+					},
+					"linkedService2_properties_typeProperties_tenant": {
+						"value": "[parameters('linkedService2_properties_typeProperties_tenant')]"
+					},
+					"linkedService2_properties_typeProperties_subscriptionId": {
+						"value": "[parameters('linkedService2_properties_typeProperties_subscriptionId')]"
+					},
+					"linkedService2_properties_typeProperties_resourceGroupName": {
+						"value": "[parameters('linkedService2_properties_typeProperties_resourceGroupName')]"
+					}
+				}
+			},
+			"dependsOn": []
+		}
+	]
+}
